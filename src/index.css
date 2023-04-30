@@ -67,6 +67,22 @@ code {
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
   }
 
+  .accordion-b {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    background-color: #566573 !important;
+    border: 0;
+    border-radius: 0;
+    overflow-anchor: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+  }
+
   .spinner-wrapper{
     /* background-color: white; */
     background: rgba(76, 175, 80, 0.5);
@@ -89,6 +105,14 @@ code {
 
   input,textarea{
     border: 1px solid black !important;
+  }
+
+  .form-control:focus {
+    color: #212529;
+    background-color: #fff;
+    border:2px solid #3498DB !important;
+    outline: 0;
+    box-shadow: none!important;
   }
 
 

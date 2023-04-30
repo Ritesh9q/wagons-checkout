@@ -66,8 +66,9 @@ const Home = () => {
       setLoader(true);
       axios({
       method: 'POST',
-      //url: 'http://localhost/university-api/add_details.php',
-      url: 'https://paymentapi.wagonseducation.com/add_details.php',
+     // url: 'http://localhost/university-api/add_details.php',
+      //url: 'https://paymentapi.wagonseducation.com/add_details.php',
+      url:'https://magmago.com/api/add_details.php',
       data: {...values}
     })
     .then(function (response) {
@@ -144,8 +145,9 @@ const handlePayment = async (params) => {
     setLoader(true);
     axios({
       method: 'POST',
-     //url: 'http://localhost/university-api/update_details.php',
-      url: 'https://paymentapi.wagonseducation.com/update_details.php',
+     // url: 'http://localhost/university-api/update_details.php',
+      //url: 'https://paymentapi.wagonseducation.com/update_details.php',
+      url:'https://magmago.com/api/update_details.php',
       data: {
         id:id,
         payment_id: razorpay_payment_id,
@@ -203,22 +205,22 @@ const handlePayment = async (params) => {
         <div className="accordion-item m-2">
           <h2
             style={{
-              backgroundColor: "#848da0",
+              backgroundColor: "#566573",
               color: "white",
               fontWeight: "700",
             }}
             className="accordion-header "
             id="headingOne"
           >
-            <div className="row align-items-center">
+            <div  className="row align-items-center">
               <div style={{margin:'0px'}} className="col">
                 <span
                   style={{
-                    backgroundColor: "#848da0",
+                    backgroundColor: "#566573",
                     color: "white",
                     fontWeight: "700",
                   }}
-                  className="accordion-button"
+                  className="accordion-b"
                 >
                   {show == 1 && (
                     <i
@@ -342,7 +344,7 @@ const handlePayment = async (params) => {
         <div className="accordion-item m-2">
         <h2
             style={{
-              backgroundColor: "#848da0",
+              backgroundColor: "#566573",
               color: "white",
               fontWeight: "700",
             }}
@@ -353,11 +355,11 @@ const handlePayment = async (params) => {
               <div className="col">
                 <span
                   style={{
-                    backgroundColor: "#848da0",
+                    backgroundColor: "#566573",
                     color: "white",
                     fontWeight: "700",
                   }}
-                  className="accordion-button"
+                  className="accordion-b"
                 >
                   {show == 2 && (
                     <i
