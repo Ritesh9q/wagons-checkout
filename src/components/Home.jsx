@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useCallback } from "react";
 import useRazorpay from "react-razorpay";
 import Validation from "./Validation";
 import axios from "axios";
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 import Success from "./Success";
 
 const Home = () => {
@@ -17,21 +16,46 @@ const Home = () => {
        university_name:'',
        about_wagons:''
   })
- console.log("form", values)
-  
-  let id;
+ //console.log("form", values)
 
   const [errors,setError] = useState({});
 
   function handleChange(e){
       setValues({...values,[e.target.name]:e.target.value});
   }
+  const addUser= ()=>{
+    setLoader(true);
+      axios({
+      method: 'POST',
+      //url: 'http://localhost/university-api/add_details.php',
+      //url: 'https://paymentapi.wagonseducation.com/add_details.php',
+      url:'https://magmago.com/api/add_details.php', 
+      data: {...values}
+    })
+    .then(function (response) {
+      setLoader(false);
+      console.log('ADD response id: '+response.data.id);
+      localStorage.setItem("id", response.data.id);
+
+      if(response.data.id){
+        handlePayment()
+      }else{
+        alert('API Response Failed');
+      }
+      
+      
+    });
+  }
 
   function handleSubmit(e){
     e.preventDefault();
-     console.log(Validation(values));
+    //  console.log(Validation(values));
 
     setError(Validation(values));
+
+    if((Object.keys(errors).length === 0) && values.name !=="" && values.email !=="" && values.mobile_number !=="" && values.college_name !=="" && values.university_name !=="" && values.city !=="" && values.about_wagons !==""){
+           addUser();
+       }
       // if((Object.keys(errors).length === 0) && values.name !=="" && values.email !=="" && values.mobile_number !=="" && values.college_name !=="" && values.university_name !=="" && values.city !=="" && values.about_wagons !==""){
        
       // }
@@ -59,31 +83,13 @@ const Home = () => {
 
   // }
   }
-  useEffect(()=>{
+  // useEffect(()=>{
 
-    if((Object.keys(errors).length === 0) && values.name !=="" && values.email !=="" && values.mobile_number !=="" && values.college_name !=="" && values.university_name !=="" && values.city !=="" && values.about_wagons !==""){
-     
-      setLoader(true);
-      axios({
-      method: 'POST',
-     // url: 'http://localhost/university-api/add_details.php',
-      //url: 'https://paymentapi.wagonseducation.com/add_details.php',
-      url:'https://magmago.com/api/add_details.php',
-      data: {...values}
-    })
-    .then(function (response) {
-      setLoader(false);
-     // alert(response.data)
-      console.log(response.data.id);
-      id=response.data.id;
-      console.log('ID: '+id);
-      handlePayment()
-      
-    });
-
-  }
+  //   if((Object.keys(errors).length === 0) && values.name !=="" && values.email !=="" && values.mobile_number !=="" && values.college_name !=="" && values.university_name !=="" && values.city !=="" && values.about_wagons !==""){
+  //     addUser();
+  //   }
     
-  },[errors])
+  // },[errors])
 
   // const MyAlert = ()=>{
   //   Swal.fire(
@@ -96,36 +102,28 @@ const Home = () => {
 
   const Razorpay = useRazorpay();
 
-
-let razorpay_payment_id;
-let status_code;
-
-
-
+const price=1;
 const handlePayment = async (params) => {
 
   //const order = await createOrder(params); //  Create order on your backend
 
   const options = {
-    //key:"rzp_test_3MW1RqVGSymGqq",
-    key: "rzp_live_cRShPYSUYAOhR5", // Enter the Key ID generated from the Dashboard
-    amount:  (1*100), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    key:"rzp_test_0EBwGUPuVjfgCU",
+    //key: "rzp_live_cRShPYSUYAOhR5", // Enter the Key ID generated from the Dashboard
+    amount:  (price*100), // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
     currency: "INR",
     name: "Wagons Education",
     description: "Wagons Education",
-    image: "https://wagonseducation.com/uploads/system/c3aba71d83a384212ca58138b5443677.png",
+    image: "https://wagonseducation.com/uploads/system/c3aba71d83a384212ca58138b5443677.png", 
    // order_id: "5", //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
     handler: function (response) { 
-     // alert(response);
-      console.log(response);
-      // update ap call (response.razorpay_payment_id, dbid )
-      // alert(response.razorpay_payment_id);
-      razorpay_payment_id= response.razorpay_payment_id;
-      status_code= response.status_code;
-
-      updateEntry();
-      // alert(response.razorpay_order_id);
-      // alert(response.razorpay_signature);
+      console.log('Razorpay payment id:'+response.razorpay_payment_id);
+      localStorage.setItem("razorpay_payment_id",response.razorpay_payment_id);
+      if(response.razorpay_payment_id){
+        updateEntry();
+      }else{
+        alert('Payment Failed. Try again...');
+      }
 
     },
     // prefill: {
@@ -141,28 +139,33 @@ const handlePayment = async (params) => {
     },
   };
 
+
+ 
+
   function updateEntry(){
     setLoader(true);
     axios({
       method: 'POST',
-     // url: 'http://localhost/university-api/update_details.php',
+      //url: 'http://localhost/university-api/update_details.php', 
       //url: 'https://paymentapi.wagonseducation.com/update_details.php',
       url:'https://magmago.com/api/update_details.php',
       data: {
-        id:id,
-        payment_id: razorpay_payment_id,
-        status: status_code,
-        amount: options.amount
+        id:localStorage.getItem("id"),
+        payment_id: localStorage.getItem("razorpay_payment_id"),
+        status: 200,
+        amount: price
       }
     })
     .then(function (response) {
-      setLoader(false);
+      
      // alert(response.data)
-     console.log(response.data);
-      if(status_code===200){
-        // MyAlert();
+     console.log('Update Response ID: '+response.data.id);
+
+      if(response.data.id){
         setSuccess(true);
-        
+        setLoader(false);
+      }else{
+        alert('Update API response failed.');
       }
       
     });
